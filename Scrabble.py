@@ -1,6 +1,53 @@
+from ast import Str
 import random
 import string
+import hashlib
 
+
+class TablaHash:
+    
+    def __init__(self,cantidad_de_palabras):
+        
+        #cantidad de palabras, hay que mandar las palabras en el archivo de texto
+        almacenaje = int(cantidad_de_palabras+(cantidad_de_palabras*.2))
+        
+        self.palabras = [None] * almacenaje
+        self.almacenaje = almacenaje
+        self.key = None
+
+    #Funcion hash
+    #hay que pasar Str
+    def buscar(self,llave,palabraOriginal):
+        if(self.palabras[llave] == None):
+            self.palabras[llave] = palabraOriginal
+            print("Usted coloco {} en el tablero".format(palabraOriginal))
+        else:
+            self.palabras[llave] == palabraOriginal
+            print("La palabra {} ya se utilizó".format(palabraOriginal))
+            
+    
+    def hash_funcion(self,palabra:Str):
+        
+        palabraorg = palabra
+        key = palabra
+        print(key)
+        key = list(key)
+        suma = 0
+        valoresASCII = []
+        for i in key:
+            valoresASCII.append(ord(i))
+        
+        for valor in valoresASCII:
+            suma = valor + suma
+        print(suma)
+        key = suma % self.almacenaje
+        self.key = key
+        
+        print(self.key)
+        self.buscar(key,palabraorg)
+
+            
+#Trie
 class Trie():
     
     def __init__(self):
@@ -34,18 +81,20 @@ class Trie():
 
 def lectura_insercion_archivo(path):
         
+        
         archivoTexto = open(path,'r')
         contenido = archivoTexto.read()
         contSinPuntuacion = contenido.translate(str.maketrans('','',string.punctuation))
         palabras = contSinPuntuacion.split()
         return palabras
 
+#Creamos nuestra clase jugador
 class Jugador():
     def __init__(self, nombre):
         self.nombre = nombre
         self.puntaje = None
         self.fichas = [None]*7
-            
+#Creamos nuestras clases fichas        
 class Fichas():
     def __init__(self):
         #Asignamos el valor a las fichas
@@ -54,6 +103,7 @@ class Fichas():
                        "o":1,"p":3,"q":5,"r":1,"s":1,"t":1,"u":1,
                        "v":4,"w":5,"x":8,"y":4,"z":10}
 
+#Creamos la clase tablero
 class Tablero():
     #Comprueba el limite de las fichas
     def __init__(self):
@@ -68,7 +118,7 @@ class Tablero():
     #Funcion que reparte las fichas a los jugadores
     def repartirFichas(self,numeroFichas:int ,jugador:Jugador):
         
-        #CUANTAS FICHAS HAY PRRIN
+        #CUANTAS FICHAS HAY 
         cantidadesFichas = [12,2,4,5,12,2,3,2,6,1,1,4,2,5,9,2,1,5,6,4,5,1,1,1,1]
         #                   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z  
         arregloFichas= ["a","b","c","d","e","f","g","h","i","j","k",
@@ -85,12 +135,11 @@ class Tablero():
                 continue
     
     def imprimirTablero(self):
-        for i in range(0,14):
-                for j in range(0,14):
+        for i in range(13):
+                for j in range(3):
                     print(self.tablero[i][j])
                     print("\n")
-                    ++j
-                ++i     
+
 
 def main():
     
@@ -99,6 +148,7 @@ def main():
     tablero = Tablero()
     numeroFichas = 7
     check = False
+    revisar_palabras_repetidas = TablaHash(50)
     
     palabras_almacenar = Trie()    
     palabras_a_insertar = lectura_insercion_archivo('C:\Ejercicios Progra\Estructuras de Datos Avanzadas\\0_palabras.txt')
@@ -147,12 +197,12 @@ def main():
                 
                 if palabras_almacenar.search_palabra(palabra):
                     print("La palabra {} es valida para el Juego".format(palabra))
+                    revisar_palabras_repetidas.hash_funcion(palabra)
+                
                 else:
                     print("La palabra {} no es valida para el Juego".format(palabra))  
                 
             #tablero.imprimirTablero()
-            
-            
             
         elif(opcion == 11):
             flag = False
