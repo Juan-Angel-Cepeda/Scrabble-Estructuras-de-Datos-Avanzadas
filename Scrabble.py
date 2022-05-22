@@ -1,7 +1,7 @@
 import random
 import string
 
-class Trie:
+class Trie():
     
     def __init__(self):
         self.raiz = {"*":"*"}
@@ -40,13 +40,13 @@ def lectura_insercion_archivo(path):
         palabras = contSinPuntuacion.split()
         return palabras
 
-class Jugador:
+class Jugador():
     def __init__(self, nombre):
         self.nombre = nombre
         self.puntaje = None
         self.fichas = [None]*7
             
-class Fichas:
+class Fichas():
     def __init__(self):
         #Asignamos el valor a las fichas
         self.fichas = {"a":1,"b":3,"c":3,"d":2,"e":1,"f":4,"g":2,
@@ -54,21 +54,20 @@ class Fichas:
                        "o":1,"p":3,"q":5,"r":1,"s":1,"t":1,"u":1,
                        "v":4,"w":5,"x":8,"y":4,"z":10}
 
-class Tablero:
+class Tablero():
     #Comprueba el limite de las fichas
     def __init__(self):
         self.tablero = ["+"]
-    
-    def crearTablero(self):
-        self.tablero
         for i in range(15):
             a = ["+"]*15
             self.tablero.append(a)
             ++i  
         print(self.tablero)
+        #self.imprimirTablero()
     
     #Funcion que reparte las fichas a los jugadores
-    def repartirFichas(numeroFichas:int ,jugador:Jugador):
+    def repartirFichas(self,numeroFichas:int ,jugador:Jugador):
+        
         #CUANTAS FICHAS HAY PRRIN
         cantidadesFichas = [12,2,4,5,12,2,3,2,6,1,1,4,2,5,9,2,1,5,6,4,5,1,1,1,1]
         #                   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z  
@@ -93,34 +92,20 @@ class Tablero:
                     ++j
                 ++i     
 
-def lectura_insercion_archivo(path):
-        
-        archivoTexto = open(path,"r")
-        contenido = archivoTexto.read()
-        contSinPuntuacion = contenido.translate(str.maketrans('','',string.punctuation))
-        print(contSinPuntuacion)
-        palabras = contSinPuntuacion.split()
-        return palabras
-
 def main():
     
     flag = True
-    fichas = Fichas
-    tablero = Tablero
+    fichas = Fichas()
+    tablero = Tablero()
     numeroFichas = 7
     check = False
     
-    palabras_almacenar = Trie()
-    
-    #Cambiar ruta para ingresar el archivo "0_palabras.txt"
-    path = 'C:\Ejercicios Progra\Estructuras de Datos Avanzadas\\0_palabras.txt'
-    palabras_a_insertar = lectura_insercion_archivo(path)
+    palabras_almacenar = Trie()    
+    palabras_a_insertar = lectura_insercion_archivo('C:\Ejercicios Progra\Estructuras de Datos Avanzadas\\0_palabras.txt')
     
     for palabra in palabras_a_insertar:
         palabras_almacenar.add_palabra(palabra)
-    
-    print("Palabras en archivo insertadas")
-        
+            
     print("""++++++Scrable+++++++\n""")
     
     while(flag):
@@ -135,10 +120,13 @@ def main():
         
         elif(opcion == 2):
             
+            #tablero.repartirFichas(numeroFichas,jugador1)
             tablero.repartirFichas(numeroFichas,jugador1)
             print("Sus fichas son: ",jugador1.fichas)
-            palabra = (str(input("""Ingrese la palabra a jugar: 
-                                    Si desea pasar presione 1. """)))
+            print("Ingresa la palabra para jugar")
+            print("So desea pasar presione 1.")
+            palabra = (str(input("""Palabra: """)))
+            
             palabra = list(palabra)
             
             if(palabra != "1"):                
@@ -149,23 +137,19 @@ def main():
                             break
                         else:
                             check = False
-                            print("Entre")
             
             if(check == False):
                 print("No puede crear su palabra con sus letras")
+            
             else:
                 print("BIEN :)")
                 palabra = ''.join(palabra)
                 
-                print(palabra)
                 if palabras_almacenar.search_palabra(palabra):
-                    print("La palabra {} existe en el trie".format(palabra))
+                    print("La palabra {} es valida para el Juego".format(palabra))
                 else:
-                    print("La palabra {} no existe en el trie".format(palabra))  
-
-
+                    print("La palabra {} no es valida para el Juego".format(palabra))  
                 
-            #tablero.crearTablero()
             #tablero.imprimirTablero()
             
             
