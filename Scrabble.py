@@ -1,7 +1,7 @@
 from ast import Str
 import random
 import string
-import hashlib
+from typing import List
 
 
 class TablaHash:
@@ -30,20 +30,15 @@ class TablaHash:
         
         palabraorg = palabra
         key = palabra
-        print(key)
         key = list(key)
         suma = 0
         valoresASCII = []
         for i in key:
             valoresASCII.append(ord(i))
-        
         for valor in valoresASCII:
             suma = valor + suma
-        print(suma)
         key = suma % self.almacenaje
         self.key = key
-        
-        print(self.key)
         self.buscar(key,palabraorg)
 
             
@@ -81,7 +76,6 @@ class Trie():
 
 def lectura_insercion_archivo(path):
         
-        
         archivoTexto = open(path,'r')
         contenido = archivoTexto.read()
         contSinPuntuacion = contenido.translate(str.maketrans('','',string.punctuation))
@@ -94,6 +88,7 @@ class Jugador():
         self.nombre = nombre
         self.puntaje = None
         self.fichas = [None]*7
+
 #Creamos nuestras clases fichas        
 class Fichas():
     def __init__(self):
@@ -107,13 +102,15 @@ class Fichas():
 class Tablero():
     #Comprueba el limite de las fichas
     def __init__(self):
-        self.tablero = ["+"]
+        self.tablero = []
         for i in range(15):
-            a = ["+"]*15
+            a = [" "]*15
             self.tablero.append(a)
-            ++i  
-        print(self.tablero)
-        #self.imprimirTablero()
+            ++i      
+    
+    def imprimirTablero(self):
+        for i in range(15):
+            print(self.tablero[i])
     
     #Funcion que reparte las fichas a los jugadores
     def repartirFichas(self,numeroFichas:int ,jugador:Jugador):
@@ -134,15 +131,22 @@ class Tablero():
                 --i
                 continue
     
-    def imprimirTablero(self):
-        for i in range(13):
-                for j in range(3):
-                    print(self.tablero[i][j])
-                    print("\n")
-
-
+    def colocarPalabraEnTablero(self,palabra,posicion1,posicion2,orientacion):
+        longitudPalabra = len(palabra)
+        if (orientacion == 1):
+            for i in range(0,longitudPalabra):
+                self.tablero[posicion1][posicion2 + i] = palabra[i]
+        elif(orientacion == 2):
+            for i in range(0,longitudPalabra):
+                self.tablero[posicion1 + i][posicion2] = palabra[i]
+        else:
+            print("No le pique a otro numero no se IDIOTA\n")
+                
 def main():
     
+    orientacion = 0
+    posX = 7
+    posY = 7
     flag = True
     fichas = Fichas()
     tablero = Tablero()
@@ -156,7 +160,8 @@ def main():
     for palabra in palabras_a_insertar:
         palabras_almacenar.add_palabra(palabra)
             
-    print("""++++++Scrable+++++++\n""")
+    print("""+++++++++++++++Scrable+++++++++++++\n""")
+    
     
     while(flag):
         
@@ -171,10 +176,11 @@ def main():
         elif(opcion == 2):
             
             #tablero.repartirFichas(numeroFichas,jugador1)
+            tablero.imprimirTablero()
             tablero.repartirFichas(numeroFichas,jugador1)
             print("Sus fichas son: ",jugador1.fichas)
             print("Ingresa la palabra para jugar")
-            print("So desea pasar presione 1.")
+            print("Si desea pasar presione 1.")
             palabra = (str(input("""Palabra: """)))
             
             palabra = list(palabra)
@@ -191,14 +197,25 @@ def main():
             if(check == False):
                 print("No puede crear su palabra con sus letras")
             
-            else:
-                print("BIEN :)")
+            else:   
                 palabra = ''.join(palabra)
                 
                 if palabras_almacenar.search_palabra(palabra):
                     print("La palabra {} es valida para el Juego".format(palabra))
                     revisar_palabras_repetidas.hash_funcion(palabra)
-                
+                    print("Ingresar la posición y orientación para poner la palabra\n")
+                    print("************ORIENTACIÓN DE LA PALABRA ************")
+                    print("1. Derecha")
+                    print("2. Abajo\n")
+                    print("************POSICIÓN DE LA PALABRA ************")
+                    posX = int(input("Poscición en X: "))
+                    posY = int(input("Poscición en Y: "))
+                    
+                    orientacion = int(input("Ingresar la orientación: "))
+                    palabra_en_tablero = list(palabra)
+                    tablero.colocarPalabraEnTablero(palabra_en_tablero,posX,posY,orientacion)
+                    tablero.imprimirTablero()
+                    
                 else:
                     print("La palabra {} no es valida para el Juego".format(palabra))  
                 
