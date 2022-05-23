@@ -1,8 +1,5 @@
-from ast import Str
 import random
 import string
-from typing import List
-
 
 class TablaHash:
     
@@ -26,7 +23,7 @@ class TablaHash:
             print("La palabra {} ya se utilizó".format(palabraOriginal))
             
     
-    def hash_funcion(self,palabra:Str):
+    def hash_funcion(self,palabra:str):
         
         palabraorg = palabra
         key = palabra
@@ -128,7 +125,7 @@ class Tablero():
                 jugador.fichas[i] = arregloFichas[x]
                 cantidadesFichas[x] = cantidadesFichas[x]-1
             else:
-                --i
+                i = i-1
                 continue
     
     def colocarPalabraEnTablero(self,palabra,posicion1,posicion2,orientacion):
@@ -140,14 +137,17 @@ class Tablero():
             for i in range(0,longitudPalabra):
                 self.tablero[posicion1 + i][posicion2] = palabra[i]
         else:
-            print("No le pique a otro numero no se IDIOTA\n")
+            print("No le pique a otro numero plox\n")
                 
+def crearJugador(nombre:str):
+    jugador = Jugador(nombre)
+    return jugador
+
 def main():
     
     orientacion = 0
     posX = 7
     posY = 7
-    flag = True
     fichas = Fichas()
     tablero = Tablero()
     numeroFichas = 7
@@ -162,67 +162,88 @@ def main():
             
     print("""+++++++++++++++Scrable+++++++++++++\n""")
     
+    cantidadDeJugadores = int(input("Ingresa la cantidad de jugadores, hasta 2 jugadores: "))
     
-    while(flag):
+    while(cantidadDeJugadores > 2):
+        print("El juego solo es de 1 o 2 jugadores")
+        print("Intenta nuevamente")
+        cantidadDeJugadores = int(input("Ingresa la cantidad de jugadores, solo 2: "))
         
-        print("1. Ingresar Jugador")
-        print("2. Comenzar Juego")
-        opcion = (int(input("Ingresa opcion: ")))
-        if(opcion == 1):
-            nombreJugador = input("Ingresar el nombre del jugador: ")
-            jugador1 = Jugador(nombreJugador)
+    jugadores = []*cantidadDeJugadores
+    
+    for i in range(0,cantidadDeJugadores):
+        nuevoJugador = crearJugador(input("Ingresa el nombre del jugador: "))
+        jugadores.append(nuevoJugador)
+    
+    opcion = int(input("Para ingresar el Juego presiona 2.\nPara terminar presiona 11 : "))
+    
+    jugadas = 2
+    turno = 0
+    
+    while(opcion == 2):
+        
+        if(jugadas%2 == 0 and len(jugadores) != 1):
+            turno = 0
+        elif(jugadas%2 != 0 and len(jugadores) != 1):
+            turno = 1
+        else:
+            turno = 0
+        
+        print("Turno de {}".format(jugadores[turno].nombre))
+        tablero.imprimirTablero()
+        tablero.repartirFichas(numeroFichas, jugadores[turno])
+        print("Sus fichas son: ",jugadores[turno].fichas)
+        print("Ingresa la palabra para jugar")
+        print("Si desea pasar presione 1.")
+        print("Para Terminar Juego Presione 11. ")
+        palabra = (str(input("""Palabra: """)))
+        
+        if(palabra == "1"):
+            #cambia el turno del jugador
+            jugadas = jugadas+1
             continue
         
-        elif(opcion == 2):
-            
-            #tablero.repartirFichas(numeroFichas,jugador1)
-            tablero.imprimirTablero()
-            tablero.repartirFichas(numeroFichas,jugador1)
-            print("Sus fichas son: ",jugador1.fichas)
-            print("Ingresa la palabra para jugar")
-            print("Si desea pasar presione 1.")
-            palabra = (str(input("""Palabra: """)))
-            
-            palabra = list(palabra)
-            
-            if(palabra != "1"):                
-                for i in range(len(palabra)):
-                    for j in range(0,7):
-                        if(palabra[i] == jugador1.fichas[j]):
-                            check = True
-                            break
-                        else:
-                            check = False
-            
-            if(check == False):
-                print("No puede crear su palabra con sus letras")
-            
-            else:   
-                palabra = ''.join(palabra)
-                
-                if palabras_almacenar.search_palabra(palabra):
-                    print("La palabra {} es valida para el Juego".format(palabra))
-                    revisar_palabras_repetidas.hash_funcion(palabra)
-                    print("Ingresar la posición y orientación para poner la palabra\n")
-                    print("************ORIENTACIÓN DE LA PALABRA ************")
-                    print("1. Derecha")
-                    print("2. Abajo\n")
-                    print("************POSICIÓN DE LA PALABRA ************")
-                    posX = int(input("Poscición en X: "))
-                    posY = int(input("Poscición en Y: "))
-                    
-                    orientacion = int(input("Ingresar la orientación: "))
-                    palabra_en_tablero = list(palabra)
-                    tablero.colocarPalabraEnTablero(palabra_en_tablero,posX,posY,orientacion)
-                    tablero.imprimirTablero()
-                    
-                else:
-                    print("La palabra {} no es valida para el Juego".format(palabra))  
-                
-            #tablero.imprimirTablero()
-            
-        elif(opcion == 11):
-            flag = False
+        elif(palabra == "11"):
+            print("ADIOS :,(")
+            return 0
         
-    
+        else:                
+            palabra = list(palabra)
+            for i in range(len(palabra)):
+                for j in range(0,7):
+                    if(palabra[i] == jugadores[turno].fichas[j]):
+                        check = True
+                        break
+                    else:
+                        check = False
+        
+        if(check == False):
+            print("No puede crear su palabra con sus letras\n")
+        else:   
+            palabra = ''.join(palabra)
+            
+            if palabras_almacenar.search_palabra(palabra):
+                print("La palabra {} es valida para el Juego".format(palabra))
+                revisar_palabras_repetidas.hash_funcion(palabra)
+                print("Ingresar la posición y orientación para poner la palabra\n")
+                print("************ORIENTACIÓN DE LA PALABRA ************")
+                print("1. Derecha")
+                print("2. Abajo\n")
+                print("************POSICIÓN DE LA PALABRA ************")
+                posX = int(input("Poscición en X: "))
+                posY = int(input("Poscición en Y: "))
+                
+                orientacion = int(input("Ingresar la orientación: "))
+                palabra_en_tablero = list(palabra)
+                tablero.colocarPalabraEnTablero(palabra_en_tablero,posX,posY,orientacion)
+                tablero.imprimirTablero()
+                jugadas = jugadas+1
+                
+            else:
+                print("La palabra {} no es valida para el Juego\n".format(palabra))  
+        
+    if(opcion == "11"):
+        print("ADIOS :,(")
+        return 0
+        
 main()
