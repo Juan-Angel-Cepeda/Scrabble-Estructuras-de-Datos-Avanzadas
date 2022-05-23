@@ -12,7 +12,7 @@ class TablaHash:
         self.almacenaje = almacenaje
         self.key = None
 
-    #Funcion hash
+   
     #hay que pasar Str
     def buscar(self,llave,palabraOriginal):
         if(self.palabras[llave] == None):
@@ -22,7 +22,7 @@ class TablaHash:
             self.palabras[llave] == palabraOriginal
             print("La palabra {} ya se utilizó".format(palabraOriginal))
             
-    
+    #Funcion hash
     def hash_funcion(self,palabra:str):
         
         palabraorg = palabra
@@ -37,8 +37,7 @@ class TablaHash:
         key = suma % self.almacenaje
         self.key = key
         self.buscar(key,palabraorg)
-
-            
+          
 #Trie
 class Trie():
     
@@ -83,17 +82,17 @@ def lectura_insercion_archivo(path):
 class Jugador():
     def __init__(self, nombre):
         self.nombre = nombre
-        self.puntaje = None
+        self.puntaje = 0
         self.fichas = [None]*7
 
 #Creamos nuestras clases fichas        
 class Fichas():
     def __init__(self):
         #Asignamos el valor a las fichas
-        self.fichas = {"a":1,"b":3,"c":3,"d":2,"e":1,"f":4,"g":2,
-                       "h":4,"i":1,"j":8,"k":5,"l":1,"m":3,"n":1,
-                       "o":1,"p":3,"q":5,"r":1,"s":1,"t":1,"u":1,
-                       "v":4,"w":5,"x":8,"y":4,"z":10}
+        self.fichas = ["a",1,"b",3,"c",3,"d",2,"e",1,"f",4,"g",2,
+                       "h",4,"i",1,"j",8,"k",5,"l",1,"m",3,"n",1,
+                       "o",1,"p",3,"q",5,"r",1,"s",1,"t",1,"u",1,
+                       "v",4,"w",5,"x",8,"y",4,"z",10]
 
 #Creamos la clase tablero
 class Tablero():
@@ -216,6 +215,11 @@ def main():
                         break
                     else:
                         check = False
+
+            for i in range(len(palabra)):
+                for j in range(0,52):
+                    if(palabra[i] == fichas.fichas[j]):
+                        jugadores[turno].puntaje = jugadores[turno].puntaje + fichas.fichas[j+1]
         
         if(check == False):
             print("No puede crear su palabra con sus letras\n")
@@ -238,12 +242,12 @@ def main():
                 tablero.colocarPalabraEnTablero(palabra_en_tablero,posX,posY,orientacion)
                 tablero.imprimirTablero()
                 jugadas = jugadas+1
-                
+                print("\nEl puntaje de {} es: {}".format(jugadores[turno].nombre,jugadores[turno].puntaje))
             else:
                 print("La palabra {} no es valida para el Juego\n".format(palabra))  
         
     if(opcion == "11"):
         print("ADIOS :,(")
-        return 0
-        
+        return 0 
+
 main()

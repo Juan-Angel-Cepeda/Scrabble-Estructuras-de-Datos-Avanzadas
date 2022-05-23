@@ -1,1 +1,1 @@
-C:\Ejercicios Progra\Estructuras de Datos Avanzadas\\0_palabras.txt\n
+  continue
