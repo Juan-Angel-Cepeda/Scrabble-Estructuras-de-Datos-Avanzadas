@@ -203,8 +203,7 @@ def main():
             continue
         
         elif(palabra == "11"):
-            print("ADIOS :,(")
-            return 0
+            break
         
         else:                
             palabra = list(palabra)
@@ -246,8 +245,9 @@ def main():
             else:
                 print("La palabra {} no es valida para el Juego\n".format(palabra))  
         
-    if(opcion == "11"):
-        print("ADIOS :,(")
-        return 0 
-
+    if(jugadores[0].puntaje > jugadores[1].puntaje):
+        print("El ganador del juego es: {} con un puntaje de {}".format(jugadores[0].nombre,jugadores[0].puntaje))
+    else:
+        print("El ganador del juego es: {}".format(jugadores[1].nombre,jugadores[1].puntaje))
+            
 main()
