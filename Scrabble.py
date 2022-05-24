@@ -62,17 +62,9 @@ class Trie():
         
         return "*" in nodo_actual
     
-    def starts_with(self,prefix):
-        nodo_actual = self.raiz
-        for letra in prefix:
-            if letra not in nodo_actual:
-                return False
-            nodo_actual = nodo_actual[letra]
-        return True
-
 def lectura_insercion_archivo(path):
         
-        archivoTexto = open(path,'r')
+        archivoTexto = open(path,'r',encoding="utf8")
         contenido = archivoTexto.read()
         contSinPuntuacion = contenido.translate(str.maketrans('','',string.punctuation))
         palabras = contSinPuntuacion.split()
@@ -127,6 +119,7 @@ class Tablero():
                 i = i-1
                 continue
     
+    
     def colocarPalabraEnTablero(self,palabra,posicion1,posicion2,orientacion):
         longitudPalabra = len(palabra)
         if (orientacion == 1):
@@ -154,7 +147,7 @@ def main():
     revisar_palabras_repetidas = TablaHash(50)
     
     palabras_almacenar = Trie()    
-    palabras_a_insertar = lectura_insercion_archivo('C:\Ejercicios Progra\Estructuras de Datos Avanzadas\\0_palabras.txt')
+    palabras_a_insertar = lectura_insercion_archivo('C:\Ejercicios Progra\Estructuras de Datos Avanzadas\\0_palabras_todas.txt')
     
     for palabra in palabras_a_insertar:
         palabras_almacenar.add_palabra(palabra)
@@ -222,12 +215,11 @@ def main():
         
         if(check == False):
             print("No puede crear su palabra con sus letras\n")
+        
         else:   
-            palabra = ''.join(palabra)
-            
+            palabra = ''.join(palabra)    
             if palabras_almacenar.search_palabra(palabra):
                 print("La palabra {} es valida para el Juego".format(palabra))
-                revisar_palabras_repetidas.hash_funcion(palabra)
                 print("Ingresar la posición y orientación para poner la palabra\n")
                 print("************ORIENTACIÓN DE LA PALABRA ************")
                 print("1. Derecha")
@@ -235,7 +227,7 @@ def main():
                 print("************POSICIÓN DE LA PALABRA ************")
                 posX = int(input("Poscición en X: "))
                 posY = int(input("Poscición en Y: "))
-                
+            
                 orientacion = int(input("Ingresar la orientación: "))
                 palabra_en_tablero = list(palabra)
                 tablero.colocarPalabraEnTablero(palabra_en_tablero,posX,posY,orientacion)
