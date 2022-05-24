@@ -1,6 +1,13 @@
 import random
 import string
 
+class Palabra:
+    
+    def __init__(self,palabra,puntaje):
+        self.palabra = palabra
+        self.puntaje = puntaje
+
+
 class TablaHash:
     
     def __init__(self,cantidad_de_palabras):
@@ -91,34 +98,32 @@ class Tablero():
     #Comprueba el limite de las fichas
     def __init__(self):
         self.tablero = []
-        for i in range(15):
-            a = [" "]*15
+        for i in range(16):
+            a = [" "]*16
             self.tablero.append(a)
-            ++i      
+            ++i
+      
+        self.cantidadesFichas = [12,2,4,5,12,2,3,2,6,1,1,4,2,5,9,2,1,5,6,4,5,1,1,1,1,1]
+        #                        A B C D E F G H I J K L M N O P Q R S T U V W X Y Z  
+        self.arregloFichas= ["a","b","c","d","e","f","g","h","i","j","k",
+                      "l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
     
     def imprimirTablero(self):
         for i in range(15):
             print(self.tablero[i])
+        print(self.cantidadesFichas)
     
     #Funcion que reparte las fichas a los jugadores
     def repartirFichas(self,numeroFichas:int ,jugador:Jugador):
-        
-        #CUANTAS FICHAS HAY 
-        cantidadesFichas = [12,2,4,5,12,2,3,2,6,1,1,4,2,5,9,2,1,5,6,4,5,1,1,1,1]
-        #                   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z  
-        arregloFichas= ["a","b","c","d","e","f","g","h","i","j","k",
-                      "l","m","n","o","p","q","r","s","t","v","w","x","y","z"]
-        
-        for i in range(0,numeroFichas):
-            x = random.randint(0, 24)
-            
-            if(cantidadesFichas[x]> 0): 
-                jugador.fichas[i] = arregloFichas[x]
-                cantidadesFichas[x] = cantidadesFichas[x]-1
+        i = 0
+        while(i < numeroFichas):
+            x = random.randint(0,25)
+            if(self.cantidadesFichas[x]> 0): 
+                jugador.fichas[i] = self.arregloFichas[x]
+                self.cantidadesFichas[x] = self.cantidadesFichas[x]-1
+                i = i+1
             else:
                 i = i-1
-                continue
-    
     
     def colocarPalabraEnTablero(self,palabra,posicion1,posicion2,orientacion):
         longitudPalabra = len(palabra)
@@ -130,6 +135,24 @@ class Tablero():
                 self.tablero[posicion1 + i][posicion2] = palabra[i]
         else:
             print("No le pique a otro numero plox\n")
+    
+    def reponerFichas(self,jugador:Jugador,palabra):
+        letrasUsadas = len(palabra)
+        contador = 0   
+        for i in range(0,letrasUsadas):
+            for j in range(0,6):
+                if(palabra[i] == jugador.fichas[j] and contador < letrasUsadas):
+                    x = random.randint(0, 24)
+                    if(self.cantidadesFichas[x]> 0): 
+                        jugador.fichas[j] = self.arregloFichas[x]
+                        self.cantidadesFichas[x] = self.cantidadesFichas[x]-1
+                        contador = contador+1
+                    else:
+                        i = i-1
+                        continue
+            
+
+        pass
                 
 def crearJugador(nombre:str):
     jugador = Jugador(nombre)
@@ -183,15 +206,28 @@ def main():
         
         print("Turno de {}".format(jugadores[turno].nombre))
         tablero.imprimirTablero()
-        tablero.repartirFichas(numeroFichas, jugadores[turno])
-        print("Sus fichas son: ",jugadores[turno].fichas)
-        print("Ingresa la palabra para jugar")
-        print("Si desea pasar presione 1.")
-        print("Para Terminar Juego Presione 11. ")
-        palabra = (str(input("""Palabra: """)))
+        if(jugadores[turno].puntaje == 0):
+            tablero.repartirFichas(numeroFichas, jugadores[turno])
+            print("Ingresa la palabra para jugar")
+            print("Si desea pasar presione 1.")
+            print("Para Terminar Juego Presione 11. ")
+            print("Sus fichas son: ",jugadores[turno].fichas)
+            palabra = (str(input("""Palabra: """)))
+        
+        else:
+            print("Sus fichas son: ",jugadores[turno].fichas)
+            print("Ingresa la palabra para jugar")
+            print("Si desea pasar presione 1.")
+            print("Si desea cambiar todas las fichas presione 2.")
+            print("Para Terminar Juego Presione 11.")
+            palabra = (str(input("""Palabra: """)))
         
         if(palabra == "1"):
             #cambia el turno del jugador
+            jugadas = jugadas+1
+            continue
+        elif(palabra == "2"):
+            tablero.repartirFichas(numeroFichas, jugadores[turno])
             jugadas = jugadas+1
             continue
         
@@ -201,7 +237,7 @@ def main():
         else:                
             palabra = list(palabra)
             for i in range(len(palabra)):
-                for j in range(0,7):
+                for j in range(0,6):
                     if(palabra[i] == jugadores[turno].fichas[j]):
                         check = True
                         break
@@ -212,6 +248,7 @@ def main():
                 for j in range(0,52):
                     if(palabra[i] == fichas.fichas[j]):
                         jugadores[turno].puntaje = jugadores[turno].puntaje + fichas.fichas[j+1]
+            
         
         if(check == False):
             print("No puede crear su palabra con sus letras\n")
@@ -220,6 +257,7 @@ def main():
             palabra = ''.join(palabra)    
             if palabras_almacenar.search_palabra(palabra):
                 print("La palabra {} es valida para el Juego".format(palabra))
+                revisar_palabras_repetidas.hash_funcion(palabra)
                 print("Ingresar la posición y orientación para poner la palabra\n")
                 print("************ORIENTACIÓN DE LA PALABRA ************")
                 print("1. Derecha")
@@ -231,9 +269,12 @@ def main():
                 orientacion = int(input("Ingresar la orientación: "))
                 palabra_en_tablero = list(palabra)
                 tablero.colocarPalabraEnTablero(palabra_en_tablero,posX,posY,orientacion)
+                
                 tablero.imprimirTablero()
                 jugadas = jugadas+1
                 print("\nEl puntaje de {} es: {}".format(jugadores[turno].nombre,jugadores[turno].puntaje))
+                tablero.reponerFichas(jugadores[turno],palabra)
+                
             else:
                 print("La palabra {} no es valida para el Juego\n".format(palabra))  
         
