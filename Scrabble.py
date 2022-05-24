@@ -1,14 +1,28 @@
+#SCRABBLE
+#INTEGRANTES
+#Fecha de Entrega 25/03/22
+#a338832 Juan Angel Cepeda Fernandez
+#a334144 Eduardo Rodriguez Chaparro
+#a330836 Manuel Balderrama Chaparro
+
+#>>>>>>>PROS
+#Reparte fichas - Verifica palabras validas - Verifica palabras no repetidas - Verifica palabras con fichas repartidas
+#Guarda las palabras, Calcula puntaje, repone fichas, y da el puntaje del jugador
+#De 1 a 2 jugadores
+#>>>>>>>CONTRAS
+#No usamos Heaps
+#Las letras en tablero, no pueden ser usadas, ni tampoco hay multiplicadores.
+
 import random
 import string
 
-class Palabra:
-    
+class Palabra: #Clase para las palabras
     def __init__(self,palabra,puntaje):
         self.palabra = palabra
         self.puntaje = puntaje
 
 
-class TablaHash:
+class TablaHash: #Tabla Hash
     
     def __init__(self,cantidad_de_palabras):
         
@@ -124,7 +138,7 @@ class Tablero():
                 i = i+1
             else:
                 i = i-1
-    
+    #Funcion para poder colocar la palabra en la matriz-tablero
     def colocarPalabraEnTablero(self,palabra,posicion1,posicion2,orientacion):
         longitudPalabra = len(palabra)
         if (orientacion == 1):
@@ -135,7 +149,7 @@ class Tablero():
                 self.tablero[posicion1 + i][posicion2] = palabra[i]
         else:
             print("No le pique a otro numero plox\n")
-    
+    #Funcion para reponer fichas usadas
     def reponerFichas(self,jugador:Jugador,palabra):
         letrasUsadas = len(palabra)
         contador = 0   
@@ -150,22 +164,25 @@ class Tablero():
                     else:
                         i = i-1
                         continue
-            
-
         pass
-                
+    
+#Se crea el jugador           
 def crearJugador(nombre:str):
     jugador = Jugador(nombre)
     return jugador
 
 def main():
     
-    orientacion = 0
+    orientacion = 0 #Variable para orientacion
+    #Variables para la posicion en la matris
     posX = 7
     posY = 7
+    #Instancias de fichas y tablero
     fichas = Fichas()
     tablero = Tablero()
+    #Numero de fichas por jugador
     numeroFichas = 7
+    #Una variable de check
     check = False
     revisar_palabras_repetidas = TablaHash(50)
     
@@ -254,6 +271,7 @@ def main():
             print("No puede crear su palabra con sus letras\n")
         
         else:   
+            #Pedimos que nos indique la orientacion de la palabra ya sea horizontal o vertical
             palabra = ''.join(palabra)    
             if palabras_almacenar.search_palabra(palabra):
                 print("La palabra {} es valida para el Juego".format(palabra))
@@ -263,6 +281,7 @@ def main():
                 print("1. Derecha")
                 print("2. Abajo\n")
                 print("************POSICIÓN DE LA PALABRA ************")
+                #Ingresamos las posiciones
                 posX = int(input("Poscición en X: "))
                 posY = int(input("Poscición en Y: "))
             
@@ -270,6 +289,7 @@ def main():
                 palabra_en_tablero = list(palabra)
                 tablero.colocarPalabraEnTablero(palabra_en_tablero,posX,posY,orientacion)
                 
+                #volvemos a imprimir el tablero
                 tablero.imprimirTablero()
                 jugadas = jugadas+1
                 print("\nEl puntaje de {} es: {}".format(jugadores[turno].nombre,jugadores[turno].puntaje))
@@ -277,7 +297,8 @@ def main():
                 
             else:
                 print("La palabra {} no es valida para el Juego\n".format(palabra))  
-        
+                
+    #Declaramos el ganador del juego segun el puntaje
     if(jugadores[0].puntaje > jugadores[1].puntaje):
         print("El ganador del juego es: {} con un puntaje de {}".format(jugadores[0].nombre,jugadores[0].puntaje))
     else:
