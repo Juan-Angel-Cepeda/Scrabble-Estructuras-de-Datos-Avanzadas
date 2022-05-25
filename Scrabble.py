@@ -112,8 +112,8 @@ class Tablero():
     #Comprueba el limite de las fichas
     def __init__(self):
         self.tablero = []
-        for i in range(16):
-            a = [" "]*16
+        for i in range(15):
+            a = [" "]*15
             self.tablero.append(a)
             ++i
       
@@ -125,7 +125,7 @@ class Tablero():
     def imprimirTablero(self):
         for i in range(15):
             print(self.tablero[i])
-        print(self.cantidadesFichas)
+        
     
     #Funcion que reparte las fichas a los jugadores
     def repartirFichas(self,numeroFichas:int ,jugador:Jugador):
